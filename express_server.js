@@ -9,10 +9,6 @@ const urlDatabase = {
 
 app.set("view engine", "ejs");
 
-// app.get("/", (req, res) => {
-//   res.send("Hello!");
-// });
-
 //MIDDLEWARE
 app.use(express.urlencoded({ extended: true }));
 
@@ -43,21 +39,12 @@ app.get("/u/:id", (req, res) => {
 
 //POST
 app.post("/urls", (req, res) => {
-  console.log(req.body); // Log the POST request body to the console
   let shortURL = generateRandomString(6);
   urlDatabase[shortURL] = req.body.longURL;
   console.log(urlDatabase);
-  // res.send("Ok"); // Respond with 'Ok' (we will replace this)
   res.redirect(`/urls/${shortURL}`);
 });
 
-// app.get("/urls.json", (req, res) => {
-//   res.json(urlDatabase);
-// });
-
-// app.get("/hello", (req, res) => {
-//   res.send("<html><body>Hello <b>World</b></body></html>\n");
-// });
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
