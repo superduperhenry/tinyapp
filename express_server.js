@@ -13,6 +13,10 @@ app.set("view engine", "ejs");
 //   res.send("Hello!");
 // });
 
+//MIDDLEWARE
+app.use(express.urlencoded({ extended: true }));
+
+
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
   res.render('urls_index', templateVars);
@@ -27,6 +31,11 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
+//POST
+app.post("/urls", (req, res) => {
+  console.log(req.body); // Log the POST request body to the console
+  res.send("Ok"); // Respond with 'Ok' (we will replace this)
+});
 
 // app.get("/urls.json", (req, res) => {
 //   res.json(urlDatabase);
