@@ -49,11 +49,11 @@ app.post("/urls", (req, res) => {
 });
 
 //EDIT URL
-app.post("/urls", (req, res) => {
-  let shortURL = generateRandomString(6);
-  urlDatabase[shortURL] = req.body.longURL;
+app.post("/urls/:id", (req, res) => {
+  let idToEdit = req.body.ID;
+  urlDatabase[idToEdit] = req.body.longURL;
   console.log(urlDatabase);
-  res.redirect(`/urls/${shortURL}`);
+  res.redirect(`/urls/${idToEdit}`);
 });
 
 //DELETE INDV URL
