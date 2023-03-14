@@ -45,15 +45,15 @@ app.post("/urls", (req, res) => {
   let shortURL = generateRandomString(6);
   urlDatabase[shortURL] = req.body.longURL;
   console.log(urlDatabase);
-  res.redirect(`/urls/${shortURL}`);
+  res.redirect(`/urls/${shortURL}`,);
 });
 
 //EDIT URL
 app.post("/urls/:id", (req, res) => {
-  let idToEdit = req.body.ID;
-  urlDatabase[idToEdit] = req.body.longURL;
-  console.log(urlDatabase);
-  res.redirect(`/urls/${idToEdit}`);
+  const { newURL } = req.body;
+  const { id } = req.params;
+  urlDatabase[id] = newURL;
+  res.redirect(`/urls/${id}`);
 });
 
 //DELETE INDV URL
