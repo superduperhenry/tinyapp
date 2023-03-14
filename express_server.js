@@ -16,28 +16,31 @@ const generateRandomString = (len) => {
   return Math.random().toString(36).substring(2, len + 2);
 };
 
-
+//ALL URLS
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
   res.render('urls_index', templateVars);
 });
 
+//ADD NEW URL
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
+//SHOW INDV URL INFO
 app.get("/urls/:id", (req, res) => {
   const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id] };
   res.render("urls_show", templateVars);
 });
 
+//REDIRECT LINK
 app.get("/u/:id", (req, res) => {
   console.log(req.params);
   const longURL = urlDatabase[req.params.id];
   res.redirect(longURL);
 });
 
-//POST
+//ADD NEW URL
 app.post("/urls", (req, res) => {
   let shortURL = generateRandomString(6);
   urlDatabase[shortURL] = req.body.longURL;
@@ -45,6 +48,15 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${shortURL}`);
 });
 
+//EDIT URL
+app.post("/urls", (req, res) => {
+  let shortURL = generateRandomString(6);
+  urlDatabase[shortURL] = req.body.longURL;
+  console.log(urlDatabase);
+  res.redirect(`/urls/${shortURL}`);
+});
+
+//DELETE INDV URL
 app.post("/urls/:id/delete", (req, res) => {
   let shortURL = req.params.id;
   delete urlDatabase[shortURL];
