@@ -35,7 +35,8 @@ app.get("/urls/:id", (req, res) => {
 
 //REDIRECT LINK
 app.get("/u/:id", (req, res) => {
-  console.log(req.params);
+  console.log(req.params.id, `line 38`);
+  console.log(urlDatabase[req.params.id], `line39 long url`);
   const longURL = urlDatabase[req.params.id];
   res.redirect(longURL);
 });
@@ -53,6 +54,7 @@ app.post("/urls/:id", (req, res) => {
   const { newURL } = req.body;
   const { id } = req.params;
   urlDatabase[id] = newURL;
+  console.log(urlDatabase, `line 56`);
   res.redirect(`/urls/${id}`);
 });
 
