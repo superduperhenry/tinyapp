@@ -8,6 +8,19 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = {
+  userRandomID: {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur",
+  },
+  user2RandomID: {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk",
+  },
+};
+
 app.set("view engine", "ejs");
 
 //MIDDLEWARE
@@ -58,9 +71,18 @@ app.get("/register", (req, res) => {
 });
 
 //REGISTER ACCOUNT
-// app.post("/register", (req, res) => {
-
-// });
+app.post("/register", (req, res) => {
+  const userID = generateRandomString(6);
+  const email = req.body.email;
+  const password = req.body.password;
+  users[userID] = {
+    id: userID,
+    email: email,
+    password: password,
+  };
+  res.cookie("user_id", userID);
+  res.redirect("/urls");
+});
 
 
 //ADD NEW URL
