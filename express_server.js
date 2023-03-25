@@ -9,7 +9,16 @@ const urlDatabase = {
 };
 
 const users = {
-
+  userRandomID: {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur",
+  },
+  user2RandomID: {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk",
+  },
 };
 
 app.set("view engine", "ejs");
@@ -20,6 +29,16 @@ app.use(cookieParser());
 
 const generateRandomString = (len) => {
   return Math.random().toString(36).substring(2, len + 2);
+};
+
+const getUserByEmail = (email, database) => {
+  for (const user in database) {
+    console.log(database[user].email);
+    if (database[user].email === email) {
+      return true;
+    }
+  }
+  return false;
 };
 
 //ALL URLS
@@ -70,6 +89,15 @@ app.post("/register", (req, res) => {
   const userID = generateRandomString(6);
   const email = req.body.email;
   const password = req.body.password;
+
+  //if registering without an email or password
+  if (!email || !password) {
+    res.status(400);
+  }
+  if (getUserByEmail(email, users)) {
+    res.status(400).redirect("/urls");
+  }
+
   users[userID] = {
     id: userID,
     email: email,
