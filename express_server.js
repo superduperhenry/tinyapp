@@ -49,6 +49,20 @@ app.get("/u/:id", (req, res) => {
   res.redirect(longURL);
 });
 
+//REGISTER WINDOW
+app.get("/register", (req, res) => {
+  const templateVars = {
+    username: req.cookies["username"]
+  };
+  res.render("urls_register", templateVars);
+});
+
+//REGISTER ACCOUNT
+// app.post("/register", (req, res) => {
+
+// });
+
+
 //ADD NEW URL
 app.post("/urls", (req, res) => {
   let shortURL = generateRandomString(6);
