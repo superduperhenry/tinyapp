@@ -28,12 +28,10 @@
         </button>
       </form>     
       <% } else{ %>  
-        <form action="/login" method="post">
-          <input type="text" name="username" placeholder="Username">
-          <button>
-            Login
-          </button>
-        </form>
+        <div class="navbar-nav">
+          <a class="nav-item nav-link" href="/login">Log In</a>
+          <a class="nav-item nav-link" href="/register">Register</a>
+        </div>
     <% } %>
   </nav>
 </header>

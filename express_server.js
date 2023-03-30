@@ -84,6 +84,14 @@ app.get("/register", (req, res) => {
   res.render("urls_register", templateVars);
 });
 
+//LOGIN WINDOW
+app.get("/login", (req, res) => {
+  const templateVars = {
+    user: users[req.cookies["user_id"]],
+  };
+  res.render("urls_login", templateVars);
+});
+
 //REGISTER ACCOUNT
 app.post("/register", (req, res) => {
   const userID = generateRandomString(6);
@@ -134,8 +142,9 @@ app.post("/urls/:id/delete", (req, res) => {
 
 //LOGIN
 app.post("/login", (req, res) => {
-  let username = req.body.username;
-  res.cookie("username", username);
+  let email = req.body.email;
+  console.log(email);
+  res.cookie("user_id", email);
   res.redirect(`/urls`);
 });
 
