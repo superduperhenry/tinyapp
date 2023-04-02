@@ -41,6 +41,23 @@ const getUserByEmail = (email, database) => {
   return false;
 };
 
+const authenticateUser = (email, password, database) => {
+  for (const user in database) {
+    if (database[user].email === email && database[user].password === password) {
+      return true;
+    }
+  }
+  return false;
+};
+
+const getUserID = (email, database) => {
+  for (const user in database) {
+    if (database[user].email === email) {
+      return database[user].id;
+    }
+  }
+};
+
 //ALL URLS
 app.get("/urls", (req, res) => {
   const templateVars = {
@@ -70,8 +87,6 @@ app.get("/urls/:id", (req, res) => {
 
 //REDIRECT LINK
 app.get("/u/:id", (req, res) => {
-  console.log(req.params.id, `line 38`);
-  console.log(urlDatabase[req.params.id], `line39 long url`);
   const longURL = urlDatabase[req.params.id];
   res.redirect(longURL);
 });
@@ -100,7 +115,7 @@ app.post("/register", (req, res) => {
 
   //if registering without an email or password
   if (!email || !password) {
-    res.status(400);
+    res.status(400).redirect("/urls");
   }
   if (getUserByEmail(email, users)) {
     res.status(400).redirect("/urls");
@@ -115,12 +130,26 @@ app.post("/register", (req, res) => {
   res.redirect("/urls");
 });
 
+//LOGIN
+app.post("/login", (req, res) => {
+  let email = req.body.email;
+  let password = req.body.password;
+
+  if (authenticateUser(email, password, users)) {
+    //if user is found and password matches, set a cookie
+    const userID = getUserID(email, users);
+    res.cookie("user_id", userID);
+    res.redirect(`/urls`);
+  } else {
+    //if user cannot be found, respond with 403 or found with wrong password
+    res.status(403).redirect("/urls");
+  }
+});
 
 //ADD NEW URL
 app.post("/urls", (req, res) => {
   let shortURL = generateRandomString(6);
   urlDatabase[shortURL] = req.body.longURL;
-  console.log(urlDatabase);
   res.redirect(`/urls/${shortURL}`,);
 });
 
@@ -129,7 +158,6 @@ app.post("/urls/:id", (req, res) => {
   const { newURL } = req.body;
   const { id } = req.params;
   urlDatabase[id] = newURL;
-  console.log(urlDatabase, `line 56`);
   res.redirect(`/urls/${id}`);
 });
 
@@ -140,13 +168,6 @@ app.post("/urls/:id/delete", (req, res) => {
   res.redirect("/urls");
 });
 
-//LOGIN
-app.post("/login", (req, res) => {
-  let email = req.body.email;
-  console.log(email);
-  res.cookie("user_id", email);
-  res.redirect(`/urls`);
-});
 
 //LOGOUT
 app.post("/logout", (req, res) => {
