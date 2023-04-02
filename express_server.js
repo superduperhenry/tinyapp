@@ -172,7 +172,7 @@ app.post("/urls/:id/delete", (req, res) => {
 //LOGOUT
 app.post("/logout", (req, res) => {
   res.clearCookie("user_id");
-  res.redirect(`/urls`);
+  res.redirect(`/login`);
 });
 
 app.listen(PORT, () => {
