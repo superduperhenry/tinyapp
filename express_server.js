@@ -72,6 +72,10 @@ app.get("/urls/new", (req, res) => {
   const templateVars = {
     user: users[req.cookies["user_id"]],
   };
+  if (!req.cookies["user_id"]) {
+    res.redirect("/login");
+    return;
+  }
   res.render("urls_new", templateVars);
 });
 
@@ -82,12 +86,17 @@ app.get("/urls/:id", (req, res) => {
     longURL: urlDatabase[req.params.id],
     user: users[req.cookies["user_id"]],
   };
+
   res.render("urls_show", templateVars);
 });
 
 //REDIRECT LINK
 app.get("/u/:id", (req, res) => {
   const longURL = urlDatabase[req.params.id];
+  if (!longURL) {
+    res.status(404).send("Short URL does not exist!");
+    return;
+  }
   res.redirect(longURL);
 });
 
@@ -121,11 +130,13 @@ app.post("/register", (req, res) => {
 
   //if registering without an email or password
   if (!email || !password) {
-    res.status(400).redirect("/urls");
+    res.redirect(400, "/urls");
+    return;
   }
   //Checks if email is already in use
   if (getUserByEmail(email, users)) {
-    res.status(400).redirect("/urls");
+    res.redirect(400, "/urls");
+    return;
   }
 
   users[userID] = {
@@ -155,9 +166,13 @@ app.post("/login", (req, res) => {
 
 //ADD NEW URL
 app.post("/urls", (req, res) => {
+  if (req.cookies["user_id"] === undefined) {
+    res.send("Please login to create a new URL");
+    return;
+  }
   let shortURL = generateRandomString(6);
   urlDatabase[shortURL] = req.body.longURL;
-  res.redirect(`/urls/${shortURL}`,);
+  res.redirect(`/urls/${shortURL}`);
 });
 
 //EDIT URL
