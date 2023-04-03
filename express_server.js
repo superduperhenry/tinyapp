@@ -3,11 +3,6 @@ const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
 
-// const urlDatabase = {
-//   "b2xVn2": "http://www.lighthouselabs.ca",
-//   "9sm5xK": "http://www.google.com"
-// };
-
 const urlDatabase = {
   b6UTxQ: {
     longURL: "https://www.tsn.ca",
@@ -68,12 +63,25 @@ const getUserID = (email, database) => {
   }
 };
 
+const urlsForUser = (id) => {
+  const urls = {};
+  for (const shortURL in urlDatabase) {
+    if (urlDatabase[shortURL].userID === id) {
+      urls[shortURL] = urlDatabase[shortURL];
+    }
+  }
+  return urls;
+};
 //ALL URLS
 app.get("/urls", (req, res) => {
   const templateVars = {
-    urls: urlDatabase,
+    urls: urlsForUser(req.cookies["user_id"]),
     user: users[req.cookies["user_id"]],
   };
+  if (!req.cookies["user_id"]) {
+    res.redirect("/login");
+    return;
+  }
   res.render('urls_index', templateVars);
 });
 
@@ -96,6 +104,16 @@ app.get("/urls/:id", (req, res) => {
     longURL: urlDatabase[req.params.id].longURL,
     user: users[req.cookies["user_id"]],
   };
+
+  if (!req.cookies["user_id"]) {
+    res.send("Please log in to view this page");
+    return;
+  }
+  //checks if urls belong to user
+  if (req.cookies["user_id"] !== urlDatabase[req.params.id].userID) {
+    res.send("URL does not belong to you");
+    return;
+  }
 
   res.render("urls_show", templateVars);
 });
@@ -190,12 +208,39 @@ app.post("/urls/:id", (req, res) => {
   const { newURL } = req.body;
   const { id } = req.params;
   urlDatabase[id].longURL = newURL;
+
+  if (!urlDatabase[id]) {
+    res.send("short URL does not exist");
+    return;
+  }
+  if (!req.cookies["user_id"]) {
+    res.send("Please log in.");
+    return;
+  }
+  if (urlDatabase[id].userID !== req.cookies["user_id"]) {
+    res.send("Url does not belong to you");
+    return;
+  }
+
   res.redirect(`/urls/${id}`);
 });
 
 //DELETE INDV URL
 app.post("/urls/:id/delete", (req, res) => {
   let shortURL = req.params.id;
+
+  if (!urlDatabase[shortURL]) {
+    res.send("short URL does not exist");
+    return;
+  }
+  if (!req.cookies["user_id"]) {
+    res.send("Please log in.");
+    return;
+  }
+  if (urlDatabase[shortURL].userID !== req.cookies["user_id"]) {
+    res.send("Url does not belong to you");
+    return;
+  }
   delete urlDatabase[shortURL];
   res.redirect("/urls");
 });
