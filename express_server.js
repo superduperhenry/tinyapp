@@ -117,6 +117,7 @@ app.post("/register", (req, res) => {
   if (!email || !password) {
     res.status(400).redirect("/urls");
   }
+  //Checks if email is already in use
   if (getUserByEmail(email, users)) {
     res.status(400).redirect("/urls");
   }
