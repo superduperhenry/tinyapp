@@ -20,20 +20,20 @@
     </div>
     
     
-    <% if(username){ %>
-      <p>Logged in as: <%= username %></p>
-      <form action="/logout" method="post">
-        <button>
+    <% if(user){ %>
+      
+      
+      <form class="form-inline" action="/logout" method="post">
+        <span style="color:black; margin-right: 5px;">Logged in as: <%= user.email %>!</span>
+        <button style="border: 1px solid black; background:transparent; border-radius: 5px; padding: 5px 10px;">
           Logout
         </button>
       </form>     
       <% } else{ %>  
-        <form action="/login" method="post">
-          <input type="text" name="username" placeholder="Username">
-          <button>
-            Login
-          </button>
-        </form>
+        <div class="navbar-nav">
+          <a class="nav-item nav-link" href="/login">Log In</a>
+          <a class="nav-item nav-link" href="/register">Register</a>
+        </div>
     <% } %>
   </nav>
 </header>
