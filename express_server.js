@@ -1,5 +1,7 @@
 const cookieParser = require("cookie-parser");
 const express = require("express");
+const bcrypt = require("bcryptjs");
+
 const app = express();
 const PORT = 8080; // default port 8080
 
@@ -48,7 +50,10 @@ const getUserByEmail = (email, database) => {
 
 const authenticateUser = (email, password, database) => {
   for (const user in database) {
-    if (database[user].email === email && database[user].password === password) {
+    const hashedPassword = database[user].password;
+    const passwordsMatching = bcrypt.compareSync(password, hashedPassword);
+    // if (database[user].email === email && database[user].password === password) {
+    if (database[user].email === email && passwordsMatching) {
       return true;
     }
   }
@@ -155,6 +160,8 @@ app.post("/register", (req, res) => {
   const userID = generateRandomString(6);
   const email = req.body.email;
   const password = req.body.password;
+  // const password = "purple-monkey-dinosaur"; // found in the req.body object
+  const hashedPassword = bcrypt.hashSync(password, 10);
 
   //if registering without an email or password
   if (!email || !password) {
@@ -170,7 +177,7 @@ app.post("/register", (req, res) => {
   users[userID] = {
     id: userID,
     email: email,
-    password: password,
+    password: hashedPassword,
   };
   res.cookie("user_id", userID);
   res.redirect("/urls");
@@ -178,9 +185,7 @@ app.post("/register", (req, res) => {
 
 //LOGIN
 app.post("/login", (req, res) => {
-  let email = req.body.email;
-  let password = req.body.password;
-
+  const { email, password } = req.body;
   if (authenticateUser(email, password, users)) {
     //if user is found and password matches, set a cookie
     const userID = getUserID(email, users);
