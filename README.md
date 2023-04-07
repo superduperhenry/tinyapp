@@ -4,7 +4,7 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 ## Final Product
 
-!["List of all URLs belonging to the user"](#https://github.com/superduperhenry/tinyapp/blob/main/docs/urls-page.png)
+!["List of all URLs belonging to the user"](https://github.com/superduperhenry/tinyapp/blob/main/docs/urls-page.png)
 
 ## Dependencies
 
