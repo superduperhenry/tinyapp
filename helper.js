@@ -1,5 +1,5 @@
 const bcrypt = require("bcryptjs");
-const { urlDatabase } = require("./database")l
+const { urlDatabase } = require("./database");
 
 
 const generateRandomString = (len) => {
