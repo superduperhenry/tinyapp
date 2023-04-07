@@ -37,6 +37,22 @@ app.get("/urls", (req, res) => {
 });
 
 //ADD NEW URL
+app.post("/urls", (req, res) => {
+  const userID = req.session.user_id;
+  if (!userID) {
+    res.send("Please login to create a new URL");
+    return;
+  }
+  let shortURL = generateRandomString(6);
+  urlDatabase[shortURL] = {
+    longURL: req.body.longURL,
+    userID: userID,
+  };
+  res.redirect(`/urls/${shortURL}`);
+});
+
+
+//ADD NEW URL
 app.get("/urls/new", (req, res) => {
   const userID = req.session.user_id;
 
@@ -71,101 +87,6 @@ app.get("/urls/:id", (req, res) => {
   }
 
   res.render("urls_show", templateVars);
-});
-
-//REDIRECT LINK
-app.get("/u/:id", (req, res) => {
-  const longURL = urlDatabase[req.params.id].longURL;
-  if (!longURL) {
-    res.status(404).send("Short URL does not exist!");
-    return;
-  }
-  res.redirect(longURL);
-});
-
-//REGISTER WINDOW
-app.get("/register", (req, res) => {
-  const userID = req.session.user_id;
-
-  const templateVars = {
-    user: users[userID],
-  };
-  //if logged in, redirect;
-  if (userID) {
-    res.redirect("/urls");
-  }
-  res.render("urls_register", templateVars);
-});
-
-//LOGIN WINDOW
-app.get("/login", (req, res) => {
-  const userID = req.session.user_id;
-
-  const templateVars = {
-    user: users[userID],
-  };
-  if (userID) {
-    res.redirect("/urls");
-  }
-  res.render("urls_login", templateVars);
-});
-
-//REGISTER ACCOUNT
-app.post("/register", (req, res) => {
-  const userID = generateRandomString(6);
-  const email = req.body.email;
-  const password = req.body.password;
-  const hashedPassword = bcrypt.hashSync(password, 10);
-
-  //if registering without an email or password
-  if (!email || !password) {
-    res.redirect(400, "/urls");
-    return;
-  }
-  //Checks if email is already in use
-  if (getUserByEmail(email, users)) {
-    res.redirect(400, "/urls");
-    return;
-  }
-
-  users[userID] = {
-    id: userID,
-    email: email,
-    password: hashedPassword,
-  };
-  // eslint-disable-next-line camelcase
-  req.session.user_id = userID;
-  res.redirect("/urls");
-});
-
-//LOGIN
-app.post("/login", (req, res) => {
-  const { email, password } = req.body;
-  if (authenticateUser(email, password, users)) {
-    //if user is found and password matches, set a cookie
-    const userID = getUserID(email, users);
-    // eslint-disable-next-line camelcase
-    req.session.user_id = userID;
-    res.redirect(`/urls`);
-  } else {
-    //if user cannot be found, respond with 403 or found with wrong password
-    res.redirect(403, "/urls");
-  }
-});
-
-//ADD NEW URL
-app.post("/urls", (req, res) => {
-  const userID = req.session.user_id;
-  if (!userID) {
-    res.send("Please login to create a new URL");
-    return;
-  }
-  let shortURL = generateRandomString(6);
-  urlDatabase[shortURL] = {
-    longURL: req.body.longURL,
-    userID: userID,
-  };
-  res.redirect(`/urls/${shortURL}`);
 });
 
 //EDIT URL
@@ -212,6 +133,87 @@ app.post("/urls/:id/delete", (req, res) => {
   delete urlDatabase[shortURL];
   res.redirect("/urls");
 });
+
+//REDIRECT LINK
+app.get("/u/:id", (req, res) => {
+  const longURL = urlDatabase[req.params.id].longURL;
+  if (!longURL) {
+    res.status(404).send("Short URL does not exist!");
+    return;
+  }
+  res.redirect(longURL);
+});
+
+//REGISTER WINDOW
+app.get("/register", (req, res) => {
+  const userID = req.session.user_id;
+
+  const templateVars = {
+    user: users[userID],
+  };
+  //if logged in, redirect;
+  if (userID) {
+    res.redirect("/urls");
+  }
+  res.render("urls_register", templateVars);
+});
+
+app.post("/register", (req, res) => {
+  const userID = generateRandomString(6);
+  const email = req.body.email;
+  const password = req.body.password;
+  const hashedPassword = bcrypt.hashSync(password, 10);
+
+  //if registering without an email or password
+  if (!email || !password) {
+    res.redirect(400, "/urls");
+    return;
+  }
+  //Checks if email is already in use
+  if (getUserByEmail(email, users)) {
+    res.redirect(400, "/urls");
+    return;
+  }
+
+  users[userID] = {
+    id: userID,
+    email: email,
+    password: hashedPassword,
+  };
+  // eslint-disable-next-line camelcase
+  req.session.user_id = userID;
+  res.redirect("/urls");
+});
+
+//LOGIN WINDOW
+app.get("/login", (req, res) => {
+  const userID = req.session.user_id;
+
+  const templateVars = {
+    user: users[userID],
+  };
+  if (userID) {
+    res.redirect("/urls");
+  }
+  res.render("urls_login", templateVars);
+});
+
+app.post("/login", (req, res) => {
+  const { email, password } = req.body;
+  if (authenticateUser(email, password, users)) {
+    //if user is found and password matches, set a cookie
+    const userID = getUserID(email, users);
+    // eslint-disable-next-line camelcase
+    req.session.user_id = userID;
+    res.redirect(`/urls`);
+  } else {
+    //if user cannot be found, respond with 403 or found with wrong password
+    res.redirect(403, "/urls");
+  }
+});
+
+
+
 
 
 //LOGOUT
