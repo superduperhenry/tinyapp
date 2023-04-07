@@ -1,8 +1,9 @@
-const cookieParser = require("cookie-parser");
 const cookieSession = require('cookie-session');
-
 const express = require("express");
 const bcrypt = require("bcryptjs");
+
+
+const { authenticateUser, generateRandomString, getUserByEmail, getUserID, urlsForUser } = require('./helper');
 
 const app = express();
 const PORT = 8080; // default port 8080
@@ -44,48 +45,7 @@ app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }));
 
-const generateRandomString = (len) => {
-  return Math.random().toString(36).substring(2, len + 2);
-};
 
-const getUserByEmail = (email, database) => {
-  for (const user in database) {
-    if (database[user].email === email) {
-      return true;
-    }
-  }
-  return false;
-};
-
-const authenticateUser = (email, password, database) => {
-  for (const user in database) {
-    const hashedPassword = database[user].password;
-    const passwordsMatching = bcrypt.compareSync(password, hashedPassword);
-    // if (database[user].email === email && database[user].password === password) {
-    if (database[user].email === email && passwordsMatching) {
-      return true;
-    }
-  }
-  return false;
-};
-
-const getUserID = (email, database) => {
-  for (const user in database) {
-    if (database[user].email === email) {
-      return database[user].id;
-    }
-  }
-};
-
-const urlsForUser = (id) => {
-  const urls = {};
-  for (const shortURL in urlDatabase) {
-    if (urlDatabase[shortURL].userID === id) {
-      urls[shortURL] = urlDatabase[shortURL];
-    }
-  }
-  return urls;
-};
 //ALL URLS
 app.get("/urls", (req, res) => {
   const userID = req.session.user_id;
