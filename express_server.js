@@ -2,41 +2,16 @@ const cookieSession = require('cookie-session');
 const express = require("express");
 const bcrypt = require("bcryptjs");
 
-
 const { authenticateUser, generateRandomString, getUserByEmail, getUserID, urlsForUser } = require('./helper');
+const { urlDatabase, users } = require("./database");
 
 const app = express();
 const PORT = 8080; // default port 8080
-
-const urlDatabase = {
-  b6UTxQ: {
-    longURL: "https://www.tsn.ca",
-    userID: "aJ48lW",
-  },
-  i3BoGr: {
-    longURL: "https://www.google.ca",
-    userID: "aJ48lW",
-  },
-};
-
-const users = {
-  userRandomID: {
-    id: "userRandomID",
-    email: "user@example.com",
-    password: "purple-monkey-dinosaur",
-  },
-  user2RandomID: {
-    id: "user2RandomID",
-    email: "user2@example.com",
-    password: "dishwasher-funk",
-  },
-};
 
 app.set("view engine", "ejs");
 
 //MIDDLEWARE
 app.use(express.urlencoded({ extended: true }));
-// app.use(cookieParser());
 app.use(cookieSession({
   name: 'session',
   keys: ['key1', 'key2'],
@@ -140,7 +115,6 @@ app.post("/register", (req, res) => {
   const userID = generateRandomString(6);
   const email = req.body.email;
   const password = req.body.password;
-  // const password = "purple-monkey-dinosaur"; // found in the req.body object
   const hashedPassword = bcrypt.hashSync(password, 10);
 
   //if registering without an email or password
@@ -243,6 +217,7 @@ app.post("/urls/:id/delete", (req, res) => {
 //LOGOUT
 app.post("/logout", (req, res) => {
   // res.clearCookie("user_id");
+  // eslint-disable-next-line camelcase
   req.session.user_id = null;
   res.redirect(`/login`);
 });

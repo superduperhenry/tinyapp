@@ -1,15 +1,6 @@
 const bcrypt = require("bcryptjs");
+const { urlDatabase } = require("./database")l
 
-const urlDatabase = {
-  b6UTxQ: {
-    longURL: "https://www.tsn.ca",
-    userID: "aJ48lW",
-  },
-  i3BoGr: {
-    longURL: "https://www.google.ca",
-    userID: "aJ48lW",
-  },
-};
 
 const generateRandomString = (len) => {
   return Math.random().toString(36).substring(2, len + 2);
