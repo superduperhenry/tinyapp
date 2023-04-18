@@ -182,12 +182,12 @@ app.post("/register", (req, res) => {
 
   //if registering without an email or password
   if (!email || !password) {
-    res.redirect(400, "/urls");
+    res.status(400).send("Please enter an email and a password")
     return;
   }
   //Checks if email is already in use
   if (getUserByEmail(email, users)) {
-    res.redirect(400, "/urls");
+    res.status(400).send("Email already in use")
     return;
   }
 
