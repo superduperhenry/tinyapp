@@ -20,6 +20,16 @@ app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }));
 
+//HOME PAGE
+app.get("/", (req, res) => {
+  const userID = req.session.user_id;
+  if (!userID) {
+    res.redirect("/login");
+    return;
+  }
+  res.redirect("/urls");
+});
+
 
 //ALL URLS
 app.get("/urls", (req, res) => {
@@ -212,13 +222,8 @@ app.post("/login", (req, res) => {
   }
 });
 
-
-
-
-
 //LOGOUT
 app.post("/logout", (req, res) => {
-  // res.clearCookie("user_id");
   // eslint-disable-next-line camelcase
   req.session.user_id = null;
   res.redirect(`/login`);
