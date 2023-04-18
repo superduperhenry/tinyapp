@@ -163,14 +163,14 @@ app.get("/u/:id", (req, res) => {
 app.get("/register", (req, res) => {
   const userID = req.session.user_id;
 
-  const templateVars = {
-    user: users[userID],
-  };
   //if logged in, redirect;
   if (userID) {
     res.redirect("/urls");
     return;
   }
+  const templateVars = {
+    user: users[userID],
+  };
   res.render("urls_register", templateVars);
 });
 
@@ -204,14 +204,14 @@ app.post("/register", (req, res) => {
 //LOGIN WINDOW
 app.get("/login", (req, res) => {
   const userID = req.session.user_id;
-
-  const templateVars = {
-    user: users[userID],
-  };
   if (userID) {
     res.redirect("/urls");
     return;
   }
+
+  const templateVars = {
+    user: users[userID],
+  };
   res.render("urls_login", templateVars);
 });
 
