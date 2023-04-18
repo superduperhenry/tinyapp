@@ -225,7 +225,7 @@ app.post("/login", (req, res) => {
     res.redirect(`/urls`);
   } else {
     //if user cannot be found, respond with 403 or found with wrong password
-    res.redirect(403, "/urls");
+    res.status(403).send("Email and password combination not found");
   }
 });
 
