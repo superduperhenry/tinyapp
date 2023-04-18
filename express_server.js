@@ -169,6 +169,7 @@ app.get("/register", (req, res) => {
   //if logged in, redirect;
   if (userID) {
     res.redirect("/urls");
+    return;
   }
   res.render("urls_register", templateVars);
 });
@@ -209,6 +210,7 @@ app.get("/login", (req, res) => {
   };
   if (userID) {
     res.redirect("/urls");
+    return;
   }
   res.render("urls_login", templateVars);
 });
