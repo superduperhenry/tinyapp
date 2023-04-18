@@ -229,6 +229,12 @@ app.post("/logout", (req, res) => {
   res.redirect(`/login`);
 });
 
+//undefined Routes
+app.get("*", (req, res) => {
+  res.status(404).send("Page not found");
+});
+
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
