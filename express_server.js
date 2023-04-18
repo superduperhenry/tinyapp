@@ -230,7 +230,7 @@ app.post("/logout", (req, res) => {
 });
 
 //undefined Routes
-app.get("*", (req, res) => {
+app.get("/*", (req, res) => {
   res.status(404).send("Page not found");
 });
 
