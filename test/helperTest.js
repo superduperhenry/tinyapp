@@ -16,16 +16,14 @@ const testUsers = {
 };
 
 describe('getUserByEmail', () => {
-  it('should return a user with valid email', () => {
+  it('should return a useßr with valid email', () => {
     const user = getUserByEmail("user@example.com", testUsers);
     const expectedUserID = "userRandomID";
-    // Write your assert statement here
     assert.equal(user.id, expectedUserID);
   });
   it('should return undefined with non-existent email', () => {
     const user = getUserByEmail("", testUsers);
     const expectedUserID = undefined;
-    // Write your assert statement here
     assert.equal(user, expectedUserID);
   });
 });

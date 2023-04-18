@@ -19,7 +19,6 @@ const authenticateUser = (email, password, database) => {
   for (const user in database) {
     const hashedPassword = database[user].password;
     const passwordsMatching = bcrypt.compareSync(password, hashedPassword);
-    // if (database[user].email === email && database[user].password === password) {
     if (database[user].email === email && passwordsMatching) {
       return true;
     }
