@@ -80,12 +80,13 @@ app.get("/urls/new", (req, res) => {
 app.get("/urls/:id", (req, res) => {
   const userID = req.session.user_id;
 
-  const templateVars = {
-    id: req.params.id,
-    longURL: urlDatabase[req.params.id].longURL,
-    user: users[userID],
+  //checks if url exists
+  if (!urlDatabase[req.params.id]) {
+    res.send("URL does not exist");
+    return;
   };
 
+  console.log(templateVars);
   if (!userID) {
     res.send("Please log in to view this page");
     return;
@@ -95,6 +96,13 @@ app.get("/urls/:id", (req, res) => {
     res.send("URL does not belong to you");
     return;
   }
+  const templateVars = {
+    id: req.params.id,
+    longURL: urlDatabase[req.params.id].longURL,
+    user: users[userID],
+  };
+
+
 
   res.render("urls_show", templateVars);
 });
