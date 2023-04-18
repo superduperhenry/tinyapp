@@ -84,9 +84,7 @@ app.get("/urls/:id", (req, res) => {
   if (!urlDatabase[req.params.id]) {
     res.send("URL does not exist");
     return;
-  };
-
-  console.log(templateVars);
+  }
   if (!userID) {
     res.send("Please log in to view this page");
     return;
@@ -101,7 +99,6 @@ app.get("/urls/:id", (req, res) => {
     longURL: urlDatabase[req.params.id].longURL,
     user: users[userID],
   };
-
 
 
   res.render("urls_show", templateVars);
@@ -127,7 +124,7 @@ app.post("/urls/:id", (req, res) => {
     return;
   }
 
-  res.redirect(`/urls/${id}`);
+  res.redirect(`/urls`);
 });
 
 //DELETE INDV URL
@@ -154,7 +151,7 @@ app.post("/urls/:id/delete", (req, res) => {
 
 //REDIRECT LINK
 app.get("/u/:id", (req, res) => {
-  const longURL = urlDatabase[req.params.id].longURL;
+  const longURL = urlDatabase[req.params.id]?.longURL;
   if (!longURL) {
     res.status(404).send("Short URL does not exist!");
     return;
