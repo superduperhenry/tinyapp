@@ -225,7 +225,7 @@ app.post("/login", (req, res) => {
 //LOGOUT
 app.post("/logout", (req, res) => {
   // eslint-disable-next-line camelcase
-  req.session.user_id = null;
+  req.session = null;
   res.redirect(`/login`);
 });
 
